@@ -1,5 +1,35 @@
 :root {
+  --bg-base: #090d10;
+  --bg-panel-header: rgba(13, 19, 26, 0.85);
+  --bg-panel-aside: rgba(12, 16, 21, 0.95);
+  --border-color: rgba(255, 255, 255, 0.05);
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --accent-color: #06b6d4;
+  --accent-hover: #0891b2;
+  --btn-bg: rgba(255, 255, 255, 0.05);
+  --btn-hover: rgba(255, 255, 255, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.5);
   color-scheme: dark;
+}
+
+body.theme-light {
+  --bg-base: #eef2f6;
+  --bg-panel-header: rgba(255, 255, 255, 0.85);
+  --bg-panel-aside: rgba(255, 255, 255, 0.95);
+  --border-color: rgba(15, 23, 42, 0.08);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --bg-card: rgba(15, 23, 42, 0.02);
+  --accent-color: #0891b2;
+  --accent-hover: #0e7490;
+  --btn-bg: rgba(15, 23, 42, 0.04);
+  --btn-hover: rgba(15, 23, 42, 0.08);
+  --shadow-color: rgba(15, 23, 42, 0.08);
+  color-scheme: light;
 }
 
 html,
@@ -7,8 +37,20 @@ body {
   margin: 0;
   min-height: 100%;
   font-family:
-    "PingFang SC", "Microsoft YaHei", "Noto Sans SC", Inter, ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", sans-serif;
+    "Inter", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-base) !important;
+  color: var(--text-secondary) !important;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+.viewer-main {
+  background-color: var(--bg-base) !important;
+  transition: background-color 300ms ease;
+}
+
+
+.font-outfit {
+  font-family: "Outfit", "Inter", sans-serif;
 }
 
 button,
@@ -20,23 +62,25 @@ button {
   min-width: 0;
   line-height: 1;
   transition:
-    background 160ms ease,
-    border-color 160ms ease,
-    transform 160ms ease;
+    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 120ms ease,
+    box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button:active {
-  transform: translateY(1px);
+  transform: scale(0.97);
 }
 
 button:focus-visible,
 input:focus-visible {
-  outline: 2px solid rgba(15, 23, 42, 0.38);
+  outline: 2px solid var(--accent-color);
   outline-offset: 2px;
 }
 
 .stage {
-  background: #0b0f14;
+  background: var(--bg-base);
+  transition: background 300ms ease;
 }
 
 .stage canvas {
@@ -46,73 +90,305 @@ input:focus-visible {
 }
 
 .controls-panel {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 40;
+  width: 350px;
+  max-h: calc(100% - 32px);
+  background-color: var(--bg-panel-header) !important; /* glassmorphism */
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 40px var(--shadow-color) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  overflow-y: auto;
+  color: var(--text-secondary) !important;
   transition:
-    width 180ms ease,
-    padding 180ms ease;
+    transform 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 300ms ease,
+    border-color 300ms ease;
+  transform: translateX(380px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.controls-panel.is-open {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.topbar {
+  position: relative;
+  z-index: 50; /* Ensure dropdown remains visible over the 3D canvas and other panels */
+  background-color: var(--bg-panel-header) !important;
+  border-color: var(--border-color) !important;
+  transition: background-color 300ms ease, border-color 300ms ease;
+}
+
+.topbar h1 {
+  color: var(--text-primary) !important;
+  transition: color 300ms ease;
+}
+
+.model-chip {
+  border-color: var(--border-color) !important;
+  transition: border-color 300ms ease;
+}
+
+.model-chip strong {
+  color: var(--text-primary) !important;
+  transition: color 300ms ease;
+}
+
+.panel-heading {
+  border-color: var(--border-color) !important;
+  transition: border-color 300ms ease;
+}
+
+.panel-heading h2 {
+  color: var(--text-primary) !important;
+  transition: color 300ms ease;
+}
+
+.statusbar {
+  background-color: var(--bg-base) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-tertiary) !important;
+  transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease;
+}
+
+.audio-player-bar {
+  background-color: var(--bg-panel-header) !important;
+  backdrop-filter: blur(20px) !important;
+  border-top: 1px solid var(--border-color) !important;
+  transition: background-color 300ms ease, border-color 300ms ease;
+}
+
+/* Premium Sound Wave Visualizer */
+.sound-wave span {
+  background-color: var(--accent-color) !important;
+  transition: height 250ms ease, background-color 300ms ease;
+}
+.sound-wave.is-playing span {
+  animation: audio-bounce 0.8s ease-in-out infinite alternate;
+}
+.sound-wave.is-playing span:nth-child(1) { animation-delay: 0.10s; }
+.sound-wave.is-playing span:nth-child(2) { animation-delay: 0.35s; }
+.sound-wave.is-playing span:nth-child(3) { animation-delay: 0.20s; }
+.sound-wave.is-playing span:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes audio-bounce {
+  10% {
+    height: 3px;
+  }
+  50% {
+    height: 12px;
+  }
+  100% {
+    height: 5px;
+  }
+}
+
+/* Button variants styling */
+#openModelButton {
+  background-color: var(--accent-color);
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.15);
+}
+#openModelButton:hover {
+  background-color: var(--accent-hover);
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.25);
+}
+
+#resetViewButton,
+#dropdownBtn,
+#themeToggleButton,
+#openSettingsButton,
+#closePanelButton,
+#playAudioButton {
+  background-color: var(--btn-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+#resetViewButton:hover,
+#dropdownBtn:hover,
+#themeToggleButton:hover,
+#openSettingsButton:hover,
+#closePanelButton:hover,
+#playAudioButton:hover {
+  background-color: var(--btn-hover) !important;
+  color: var(--text-primary) !important;
+}
+#openSettingsButton.is-active {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.2) !important;
+  color: var(--accent-color) !important;
+}
+
+#dropdownBtn + div,
+#renderingModeBtn + div {
+  color: var(--text-secondary) !important;
+  transition: color 300ms ease;
+}
+
+#dropdownBtn[aria-expanded="true"],
+#renderingModeBtn[aria-expanded="true"] {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.2) !important;
+}
+
+#dropdownList,
+#renderingModeList {
+  background-color: var(--bg-panel-aside) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 12px 30px var(--shadow-color) !important;
+  padding: 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.dropdown-item,
+.rendering-mode-item {
+  color: var(--text-secondary) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  background-color: transparent !important;
+  transition: background-color 150ms ease, color 150ms ease !important;
+}
+
+.dropdown-item:hover,
+.rendering-mode-item:hover {
+  background-color: var(--btn-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+.dropdown-item.is-active,
+.rendering-mode-item.is-active {
+  color: var(--accent-color) !important;
+  background-color: rgba(6, 182, 212, 0.08) !important;
+}
+
+.dropdown-item .active-indicator,
+.rendering-mode-item .active-indicator {
+  background-color: var(--accent-color) !important;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.dropdown-item.is-active .active-indicator,
+.rendering-mode-item.is-active .active-indicator {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Custom scrollbar for controls-panel */
+.controls-panel::-webkit-scrollbar {
+  width: 5px;
+}
+.controls-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.controls-panel::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 999px;
+}
+.controls-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
 }
 
 .panel-body {
-  max-height: 720px;
-  overflow: hidden;
-  opacity: 1;
-  transition:
-    max-height 220ms ease,
-    opacity 160ms ease,
-    transform 180ms ease;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
 }
 
-.controls-panel.is-collapsed {
-  width: min(260px, calc(100vw - 32px));
-}
-
-.controls-panel.is-collapsed .panel-body {
-  max-height: 0;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-4px);
-}
-
+/* Custom sliders */
 .control-row input[type="range"],
 #audioProgress,
 #audioVolume {
   width: 100%;
-  height: 6px;
+  height: 4px;
   border-radius: 999px;
   appearance: none;
-  background: #cbd5e1;
+  background: var(--btn-bg);
   outline: none;
+  cursor: pointer;
+  transition: background 150ms ease;
 }
 
+.control-row input[type="range"]:hover,
+#audioProgress:hover,
+#audioVolume:hover {
+  background: var(--btn-hover);
+}
+
+/* Webkit (Chrome, Safari, Edge) Slider Thumb */
 .control-row input[type="range"]::-webkit-slider-thumb,
 #audioProgress::-webkit-slider-thumb,
 #audioVolume::-webkit-slider-thumb {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #ffffff;
+  width: 12px;
+  height: 12px;
   border-radius: 999px;
   appearance: none;
-  background: #0f172a;
-  box-shadow: 0 2px 7px rgba(15, 23, 42, 0.24);
+  background: var(--accent-color);
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+  transition: transform 120ms ease, background-color 120ms ease;
 }
 
+.control-row input[type="range"]::-webkit-slider-thumb:hover,
+#audioProgress::-webkit-slider-thumb:hover,
+#audioVolume::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  background: var(--accent-hover);
+}
+
+/* Firefox Slider Thumb */
 .control-row input[type="range"]::-moz-range-thumb,
 #audioProgress::-moz-range-thumb,
 #audioVolume::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  border: 2px solid #ffffff;
+  width: 12px;
+  height: 12px;
+  border: none;
   border-radius: 999px;
-  background: #0f172a;
-  box-shadow: 0 2px 7px rgba(15, 23, 42, 0.24);
+  background: var(--accent-color);
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+  transition: transform 120ms ease, background-color 120ms ease;
 }
 
-.switch-row input {
-  width: 18px;
-  height: 18px;
-  accent-color: #0f172a;
+.control-row input[type="range"]::-moz-range-thumb:hover,
+#audioProgress::-moz-range-thumb:hover,
+#audioVolume::-moz-range-thumb:hover {
+  transform: scale(1.25);
+  background: var(--accent-hover);
 }
 
-.audio-player audio {
+/* Custom switch toggle track & thumb styling */
+.switch-row .peer + div {
+  background-color: var(--btn-bg);
+  transition: background-color 200ms ease;
+}
+.switch-row .peer:checked + div {
+  background-color: var(--accent-color);
+}
+.switch-row .peer + div::after {
+  background-color: var(--text-tertiary);
+  transition: transform 180ms cubic-bezier(0.4, 0, 0.2, 1), background-color 200ms ease;
+}
+.switch-row .peer:checked + div::after {
+  background-color: var(--bg-base);
+}
+
+.audio-player-bar audio {
   display: none;
 }
 
@@ -122,19 +398,22 @@ input:focus-visible {
   inset: 16px;
   display: grid;
   place-items: center;
-  border: 2px dashed rgba(255, 255, 255, 0.72);
-  border-radius: 6px;
-  background: rgba(15, 23, 42, 0.5);
-  color: #ffffff;
-  font-size: clamp(24px, 4vw, 56px);
-  font-weight: 650;
-  letter-spacing: 0;
+  border: 2px dashed var(--accent-color);
+  border-radius: 12px;
+  background: rgba(9, 13, 16, 0.85);
+  color: var(--accent-color);
+  font-size: clamp(20px, 3.5vw, 42px);
+  font-weight: 700;
+  font-family: "Outfit", "Inter", sans-serif;
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.15);
   opacity: 0;
   pointer-events: none;
-  transform: scale(0.99);
+  transform: scale(0.98);
+  backdrop-filter: blur(8px);
   transition:
-    opacity 160ms ease,
-    transform 160ms ease;
+    opacity 220ms ease,
+    transform 220ms ease;
 }
 
 .dragging .drop-overlay {
@@ -144,19 +423,29 @@ input:focus-visible {
 
 .loading-overlay {
   position: absolute;
-  z-index: 12;
+  z-index: 20;
   left: 50%;
   top: 50%;
   display: none;
   align-items: center;
-  gap: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 6px;
-  background: rgba(15, 23, 42, 0.88);
-  color: #ffffff;
-  padding: 12px 16px;
+  gap: 12px;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 12px !important;
+  background-color: var(--bg-panel-header) !important;
+  color: var(--text-primary) !important;
+  padding: 16px 22px !important;
   transform: translate(-50%, -50%);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 20px 40px var(--shadow-color), 0 0 15px rgba(6, 182, 212, 0.08) !important;
+  transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease;
+}
+
+.loading-track {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.theme-light .loading-track {
+  background-color: rgba(15, 23, 42, 0.08) !important;
 }
 
 .loading-overlay.is-visible {
@@ -167,23 +456,81 @@ input:focus-visible {
   display: none !important;
 }
 
-.loader {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.28);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: spin 900ms linear infinite;
+/* Premium Rotating SVG Loader */
+.loader-svg {
+  width: 20px;
+  height: 20px;
+  animation: loader-rotate 2s linear infinite;
+}
+.loader-svg .path {
+  stroke: var(--accent-color);
+  stroke-linecap: round;
+  animation: loader-dash 1.5s ease-in-out infinite;
 }
 
-@keyframes spin {
-  to {
+@keyframes loader-rotate {
+  100% {
     transform: rotate(360deg);
   }
 }
 
-@media (max-width: 760px) {
-  .controls-panel.is-collapsed {
-    width: 100%;
+@keyframes loader-dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
   }
 }
+
+@media (max-width: 760px) {
+  .controls-panel {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-h: 70vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    transform: translateY(100%) !important;
+    opacity: 1 !important;
+    pointer-events: auto;
+  }
+  .controls-panel.is-open {
+    transform: translateY(0) !important;
+  }
+}
+
+/* Theme Toggle capsule switch customization */
+#themeToggleButton {
+  background-color: var(--btn-bg) !important;
+  border-color: var(--border-color) !important;
+}
+#themeToggleButton:hover {
+  background-color: var(--btn-hover) !important;
+}
+
+#themeToggleHandle {
+  transform: translateX(0);
+  background-color: #ffffff;
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1), background-color 200ms ease;
+}
+
+
+body.theme-light #themeToggleHandle {
+  transform: translateX(24px);
+  background-color: #0f172a;
+}
+
+
+

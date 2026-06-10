@@ -1,4 +1,4 @@
-# 三维模型展厅
+# Nova 3D Studio
 
 一个独立的静态 Three.js 模型查看器，不依赖 Node、npm 或 Vite。
 

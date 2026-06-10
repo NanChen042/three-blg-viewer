@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>三维模型展厅</title>
+    <title>Nova 3D Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css" />
     <script type="importmap">
       {
@@ -15,151 +18,277 @@
       }
     </script>
   </head>
-  <body class="h-screen overflow-hidden bg-slate-100 text-slate-950 antialiased max-[760px]:h-auto max-[760px]:overflow-auto">
+  <body class="h-screen overflow-hidden antialiased max-[760px]:h-auto max-[760px]:overflow-auto select-none">
     <div class="viewer-shell flex h-screen flex-col max-[760px]:h-auto max-[760px]:min-h-screen">
-      <header class="topbar shrink-0 border-b border-slate-200 bg-white px-5 py-3 max-[760px]:px-3">
-        <div class="mx-auto grid max-w-[1600px] grid-cols-[minmax(220px,1fr)_minmax(220px,0.55fr)_auto] items-center gap-4 max-[1080px]:grid-cols-[1fr_auto] max-[760px]:grid-cols-1 max-[760px]:gap-3">
+      <header class="topbar relative shrink-0 border-b border-white/5 bg-[#0d131a]/85 backdrop-blur-md px-5 py-3.5 max-[760px]:px-4">
+        <div class="mx-auto grid max-w-[1600px] grid-cols-[minmax(220px,1fr)_minmax(220px,0.55fr)_auto] items-center gap-4 max-[1080px]:grid-cols-[1fr_auto] max-[760px]:grid-cols-1 max-[760px]:gap-3 min-[1080px]:pr-28">
           <div class="min-w-0">
-            <p class="text-xs font-medium text-slate-500">本地实时模型查看器</p>
-            <h1 class="mt-1 truncate text-xl font-semibold leading-tight tracking-normal text-slate-950 max-[760px]:text-lg">三维模型展厅</h1>
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-[#06b6d4]">Real-time 3D Viewport</p>
+            <h1 class="mt-1 truncate text-xl font-bold leading-none tracking-tight text-white max-[760px]:text-lg font-outfit">Nova 3D Studio</h1>
           </div>
 
-          <div class="model-chip grid min-w-0 gap-0.5 border-l border-slate-200 pl-4 max-[1080px]:col-span-full max-[1080px]:border-l-0 max-[1080px]:border-t max-[1080px]:pt-3 max-[1080px]:pl-0" aria-live="polite">
-            <span class="text-xs font-medium text-slate-500">当前模型</span>
-            <strong id="modelName" class="truncate text-sm font-semibold text-slate-900">黄洋葱 2K 材质模型</strong>
+          <div class="model-chip flex flex-col min-w-0 gap-0.5 border-l border-white/10 pl-4 max-[1080px]:col-span-full max-[1080px]:border-l-0 max-[1080px]:border-t max-[1080px]:border-white/5 max-[1080px]:pt-3 max-[1080px]:pl-0" aria-live="polite">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">当前模型</span>
+            <strong id="modelName" class="truncate text-sm font-semibold text-slate-300 font-outfit">黄洋葱 2K 材质模型</strong>
           </div>
 
-          <div class="toolbar flex min-w-0 flex-wrap justify-end gap-2 max-[760px]:grid max-[760px]:grid-cols-3">
+          <div class="toolbar flex min-w-0 flex-wrap items-center justify-end gap-3 max-[760px]:justify-center">
             <input id="fileInput" class="sr-only" type="file" accept=".glb,.gltf,model/gltf-binary,model/gltf+json" />
             <button
               id="openModelButton"
-              class="h-9 rounded bg-slate-900 px-3 text-sm font-semibold text-white hover:bg-slate-800"
+              class="h-9 rounded-lg px-3.5 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all duration-150"
               type="button"
             >
-              导入模型
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+              <span>导入模型</span>
             </button>
             <button
               id="resetViewButton"
-              class="h-9 rounded border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+              class="h-9 rounded-lg px-3.5 text-xs font-semibold active:scale-95 transition-all duration-150 flex items-center justify-center gap-1.5"
               type="button"
             >
-              复位视角
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              <span>复位视角</span>
             </button>
-            <button
-              id="defaultModelButton"
-              class="h-9 rounded border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"
-              type="button"
-            >
-              内置模型
-            </button>
+            <!-- Custom Dropdown Menu -->
+            <div class="relative inline-block text-left shrink-0" id="customModelDropdown">
+              <button
+                id="dropdownBtn"
+                class="h-9 rounded-lg px-3.5 pr-8 text-xs font-semibold active:scale-95 transition-all duration-150 flex items-center justify-between gap-1.5 focus:outline-none"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <span id="dropdownCurrentLabel">黄洋葱模型</span>
+                <div class="absolute right-2 flex items-center pointer-events-none text-slate-400">
+                  <svg id="dropdownArrow" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </button>
+              
+              <!-- Dropdown menu items -->
+              <div
+                id="dropdownList"
+                class="absolute right-0 mt-1.5 w-48 rounded-lg bg-[#0d131a]/95 backdrop-blur-lg border border-white/10 shadow-xl z-40 origin-top-right scale-95 opacity-0 pointer-events-none transition-all duration-150"
+                role="menu"
+              >
+                <button
+                  class="dropdown-item w-full text-xs font-semibold is-active"
+                  role="menuitem"
+                  data-value="onion"
+                >
+                  <span>黄洋葱模型</span>
+                  <span class="active-indicator w-1.5 h-1.5 rounded-full bg-current"></span>
+                </button>
+                <button
+                  class="dropdown-item w-full text-xs font-semibold"
+                  role="menuitem"
+                  data-value="fan"
+                >
+                  <span>复古吊扇模型</span>
+                  <span class="active-indicator w-1.5 h-1.5 rounded-full bg-current"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Absolute positioned Theme Switcher & Settings Toggle -->
+        <div class="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-3 select-none max-[760px]:top-6 max-[760px]:translate-y-0 max-[760px]:right-4">
+          <button
+            id="openSettingsButton"
+            class="h-6 w-6 rounded-full active:scale-95 transition-all duration-150 flex items-center justify-center"
+            type="button"
+            title="显示设置"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </button>
+          
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 max-[1080px]:hidden font-outfit">主题</span>
+          <div id="themeToggleButton" class="relative w-11 h-6 bg-white/10 rounded-full flex items-center justify-between px-1.5 cursor-pointer transition-all duration-300 border border-white/5" title="切换主题">
+            <!-- Moon icon (left) -->
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            <!-- Sun icon (right) -->
+            <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-11.314l.707.707m11.314 11.314l.707.707M12 7a5 5 0 100 10 5 5 0 000-10z"/></svg>
+            <!-- Sliding handle -->
+            <div id="themeToggleHandle" class="absolute top-[2px] left-[2px] w-4.5 h-4.5 rounded-full bg-white shadow-md transition-transform duration-200 transform"></div>
           </div>
         </div>
       </header>
 
-      <main class="viewer-main mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 bg-slate-100 max-[760px]:flex-none max-[760px]:flex-col">
-        <section id="stage" class="stage relative min-h-0 flex-1 overflow-hidden max-[760px]:h-[52vh] max-[760px]:min-h-[320px] max-[760px]:flex-none" aria-label="3D model viewport">
+      <main class="viewer-main relative mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 max-[760px]:flex-none max-[760px]:flex-col">
+        <section id="stage" class="stage relative min-h-0 flex-1 overflow-hidden max-[760px]:h-[48vh] max-[760px]:min-h-[300px] max-[760px]:flex-none" aria-label="3D model viewport">
           <div id="dropOverlay" class="drop-overlay">松手导入模型</div>
-          <div id="loadingOverlay" class="loading-overlay" hidden aria-hidden="true">
-            <span class="loader"></span>
-            <span id="loadingText">正在加载模型</span>
+          <div id="loadingOverlay" class="loading-overlay flex-col min-w-[220px]" hidden aria-hidden="true">
+            <div class="flex items-center gap-3 w-full">
+              <svg class="loader-svg shrink-0" viewBox="0 0 50 50" aria-hidden="true">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+              </svg>
+              <span id="loadingText" class="text-xs font-semibold uppercase tracking-wider">正在加载模型</span>
+            </div>
+            <div class="w-full loading-track h-1 rounded-full mt-3 overflow-hidden">
+              <div id="loadingProgressBar" class="bg-[#06b6d4] h-full w-0 transition-all duration-150 shadow-[0_0_8px_rgba(6,182,212,0.6)]"></div>
+            </div>
           </div>
+
+
         </section>
 
         <aside
           id="controlsPanel"
-          class="controls-panel grid w-[360px] shrink-0 content-start gap-3 overflow-y-auto border-l border-slate-200 bg-white p-4 text-slate-950 max-[760px]:w-full max-[760px]:border-l-0 max-[760px]:border-t max-[760px]:p-3"
+          class="controls-panel p-5 text-slate-200"
           aria-label="Viewer controls"
         >
-          <div class="panel-heading flex items-end justify-between gap-3 border-b border-slate-200 pb-3">
+          <div class="panel-heading flex items-end justify-between gap-3 border-b border-white/5 pb-3">
             <div>
-              <span class="text-xs font-medium text-slate-500">渲染参数</span>
-              <h2 class="text-base font-semibold leading-tight text-slate-950">显示设置</h2>
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">渲染参数</span>
+              <h2 class="text-base font-bold leading-none text-white font-outfit mt-1">显示设置</h2>
             </div>
             <div class="flex shrink-0 items-center gap-2">
-              <span id="statusPill" class="rounded border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+              <span id="statusPill" class="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-400">
                 实时
               </span>
               <button
-                id="panelToggleButton"
-                class="h-8 rounded border border-slate-300 bg-white px-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                id="closePanelButton"
+                class="h-7 w-7 rounded-md border border-white/10 bg-white/5 flex items-center justify-center text-slate-300 hover:bg-white/10 hover:text-white active:scale-95 transition-all duration-150"
                 type="button"
-                aria-controls="panelBody"
-                aria-expanded="true"
+                title="关闭面版"
               >
-                收起
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
           </div>
 
-          <div id="panelBody" class="panel-body grid gap-3 max-[760px]:grid-cols-2" aria-hidden="false">
-            <label class="switch-row grid min-h-8 grid-cols-[1fr_auto] items-center gap-3 text-sm font-medium text-slate-800">
+          <div id="panelBody" class="panel-body grid gap-4 max-[760px]:grid-cols-2" aria-hidden="false">
+            <label class="switch-row flex min-h-9 items-center justify-between gap-3 text-xs font-semibold uppercase tracking-wider text-slate-400 cursor-pointer">
               <span>自动旋转</span>
-              <input id="autoRotateToggle" type="checkbox" checked />
+              <div class="relative inline-flex items-center">
+                <input id="autoRotateToggle" type="checkbox" checked class="sr-only peer" />
+                <div class="w-9 h-5 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:rounded-full after:h-4 after:w-4 transition-all"></div>
+              </div>
             </label>
 
-            <label class="switch-row grid min-h-8 grid-cols-[1fr_auto] items-center gap-3 text-sm font-medium text-slate-800">
-              <span>线框模式</span>
-              <input id="wireframeToggle" type="checkbox" />
+            <label class="control-row grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400 max-[760px]:col-span-2">
+              <span>渲染模式</span>
+              <div class="relative inline-block text-left w-full" id="customRenderingModeDropdown">
+                <button
+                  id="renderingModeBtn"
+                  class="h-9 w-full rounded-lg px-3.5 pr-8 text-xs font-semibold active:scale-95 transition-all duration-150 flex items-center justify-between gap-1.5 focus:outline-none"
+                  type="button"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <span id="renderingModeCurrentLabel">标准着色</span>
+                  <div class="absolute right-2 flex items-center pointer-events-none text-slate-400">
+                    <svg id="renderingModeArrow" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                </button>
+                
+                <!-- Custom dropdown items -->
+                <div
+                  id="renderingModeList"
+                  class="absolute left-0 right-0 mt-1.5 rounded-lg bg-[#0d131a]/95 backdrop-blur-lg border border-white/10 shadow-xl z-50 scale-95 opacity-0 pointer-events-none transition-all duration-150 flex flex-col gap-0.5"
+                  role="menu"
+                >
+                  <button class="rendering-mode-item w-full text-xs font-semibold is-active" role="menuitem" data-value="shaded">
+                    <span>标准着色</span>
+                    <span class="active-indicator w-1.5 h-1.5 rounded-full bg-current"></span>
+                  </button>
+                  <button class="rendering-mode-item w-full text-xs font-semibold" role="menuitem" data-value="wireframe">
+                    <span>网格线框</span>
+                    <span class="active-indicator w-1.5 h-1.5 rounded-full bg-current"></span>
+                  </button>
+                  <button class="rendering-mode-item w-full text-xs font-semibold" role="menuitem" data-value="xray">
+                    <span>X光透视</span>
+                    <span class="active-indicator w-1.5 h-1.5 rounded-full bg-current"></span>
+                  </button>
+                  <button class="rendering-mode-item w-full text-xs font-semibold" role="menuitem" data-value="normals">
+                    <span>表面法线</span>
+                    <span class="active-indicator w-1.5 h-1.5 rounded-full bg-current"></span>
+                  </button>
+                  <button class="rendering-mode-item w-full text-xs font-semibold" role="menuitem" data-value="depth">
+                    <span>深度分布</span>
+                    <span class="active-indicator w-1.5 h-1.5 rounded-full bg-current"></span>
+                  </button>
+                </div>
+              </div>
             </label>
 
-            <label class="control-row grid gap-2 text-sm font-medium text-slate-800 max-[760px]:col-span-2">
+            <label class="control-row grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400 max-[760px]:col-span-2">
               <span>旋转速度</span>
               <input id="speedRange" type="range" min="0" max="2" step="0.05" value="0.45" />
             </label>
 
-            <label class="control-row grid gap-2 text-sm font-medium text-slate-800 max-[760px]:col-span-2">
+            <label class="control-row grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400 max-[760px]:col-span-2">
               <span>曝光</span>
               <input id="exposureRange" type="range" min="0.5" max="2" step="0.05" value="1.15" />
             </label>
 
-            <label class="control-row grid gap-2 text-sm font-medium text-slate-800 max-[760px]:col-span-2">
+            <label class="control-row grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400 max-[760px]:col-span-2">
               <span>主光</span>
               <input id="keyLightRange" type="range" min="0" max="8" step="0.1" value="4.2" />
             </label>
 
-            <label class="control-row grid gap-2 text-sm font-medium text-slate-800 max-[760px]:col-span-2">
+            <label class="control-row grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400 max-[760px]:col-span-2">
               <span>环境光</span>
               <input id="environmentRange" type="range" min="0" max="3" step="0.05" value="1.25" />
             </label>
-
-            <section class="audio-player grid gap-3 rounded border border-slate-200 bg-slate-50 p-3 max-[760px]:col-span-2" aria-label="音频播放器">
-              <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0">
-                  <h3 class="text-sm font-semibold leading-tight text-slate-950">环境音频</h3>
-                  <p id="audioStatus" class="mt-1 text-xs font-medium text-slate-500">正在准备内置音频</p>
-                </div>
-                <button
-                  id="playAudioButton"
-                  class="h-8 shrink-0 rounded bg-slate-900 px-3 text-xs font-semibold text-white hover:bg-slate-800"
-                  type="button"
-                >
-                  播放
-                </button>
-              </div>
-
-              <audio id="ambientAudio" preload="auto" loop></audio>
-
-              <div class="grid gap-1.5">
-                <input id="audioProgress" type="range" min="0" max="1000" step="1" value="0" aria-label="音频进度" />
-                <div class="flex justify-between text-[11px] font-medium text-slate-500">
-                  <span id="audioCurrentTime">0:00</span>
-                  <span id="audioDuration">0:00</span>
-                </div>
-              </div>
-
-              <label class="grid gap-1.5 text-xs font-semibold text-slate-700">
-                <span>音量</span>
-                <input id="audioVolume" type="range" min="0" max="1" step="0.01" value="0.55" />
-              </label>
-            </section>
           </div>
         </aside>
       </main>
 
-      <footer class="statusbar shrink-0 border-t border-slate-200 bg-white px-5 py-2 text-xs font-medium text-slate-500 max-[760px]:px-3">
+      <!-- Audio Player Bar -->
+      <section class="audio-player-bar shrink-0 border-t border-white/5 bg-[#0d131a]/85 backdrop-blur-md px-5 py-3 select-none max-[760px]:px-4" aria-label="音频播放器">
+        <div class="mx-auto flex max-w-[1600px] items-center justify-between gap-4 max-[640px]:flex-col max-[640px]:gap-3">
+          <!-- Left: Play button, Media Info & Sound Wave -->
+          <div class="flex items-center gap-3.5 min-w-[220px] max-[640px]:w-full max-[640px]:justify-between">
+            <div class="flex items-center gap-3">
+              <button
+                id="playAudioButton"
+                class="h-10 w-10 rounded-full bg-[#06b6d4] text-white hover:bg-[#0891b2] active:scale-90 flex items-center justify-center transition-all duration-200 shadow-[0_0_12px_rgba(6,182,212,0.25)] hover:shadow-[0_0_20px_rgba(6,182,212,0.45)] shrink-0 focus:outline-none"
+                type="button"
+                title="播放/暂停"
+              >
+                <svg class="w-4 h-4 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+              <div class="flex flex-col min-w-0">
+                <span class="text-xs font-semibold text-white font-outfit truncate max-w-[140px]">Ambient Synthesizer</span>
+                <span id="audioStatus" class="text-[10px] font-semibold text-[#06b6d4] uppercase tracking-wider mt-0.5">已加载</span>
+              </div>
+            </div>
+            <!-- Animated Sound Wave -->
+            <div class="sound-wave select-none pl-1 flex items-end gap-[2.5px] h-3" aria-hidden="true">
+              <span class="block w-[2px] h-0.5 bg-[#06b6d4] rounded-full transition-all duration-300"></span>
+              <span class="block w-[2px] h-0.5 bg-[#06b6d4] rounded-full transition-all duration-300"></span>
+              <span class="block w-[2px] h-0.5 bg-[#06b6d4] rounded-full transition-all duration-300"></span>
+              <span class="block w-[2px] h-0.5 bg-[#06b6d4] rounded-full transition-all duration-300"></span>
+            </div>
+          </div>
+
+          <!-- Center: Progress Bar -->
+          <div class="flex flex-1 items-center gap-2.5 max-w-[600px] w-full">
+            <span id="audioCurrentTime" class="text-[10px] font-semibold text-slate-400 font-outfit min-w-[28px] text-right">0:00</span>
+            <input id="audioProgress" type="range" min="0" max="1000" step="1" value="0" class="flex-1 h-1 rounded-full cursor-pointer" aria-label="音频进度" />
+            <span id="audioDuration" class="text-[10px] font-semibold text-slate-400 font-outfit min-w-[28px]">0:00</span>
+          </div>
+
+          <!-- Right: Volume controls with Mute Button -->
+          <div class="flex items-center gap-2 min-w-[130px] justify-end max-[640px]:w-full max-[640px]:justify-center">
+            <button id="muteVolumeButton" class="text-slate-400 hover:text-white transition-colors duration-150 focus:outline-none" type="button" title="静音/取消静音">
+              <svg id="volumeIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9H4.5v6h3.25L12 18.75z"/></svg>
+            </button>
+            <input id="audioVolume" type="range" min="0" max="1" step="0.01" value="0.55" class="w-20 h-1 rounded-full cursor-pointer" aria-label="音量" />
+          </div>
+        </div>
+        <audio id="ambientAudio" preload="auto" loop></audio>
+      </section>
+
+      <footer class="statusbar shrink-0 border-t border-white/5 bg-[#090d10] px-5 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500 max-[760px]:px-4">
         <div class="mx-auto flex max-w-[1600px] justify-between gap-3">
-          <span id="statusText">就绪</span>
-          <span>Three.js 0.165.0</span>
+          <span id="statusText" class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            就绪
+          </span>
+          <span class="font-outfit">Three.js 0.165.0</span>
         </div>
       </footer>
     </div>
